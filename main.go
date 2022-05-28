@@ -44,23 +44,23 @@ func main() {
 		log.Println(err)
 		os.Exit(1)
 	}
-	fmt.Printf("head hash: %s\n", h)
+	log.Printf("head hash: %s", h)
 	modName, err := getModuleNameFromGoMod(gitPath)
 	if err != nil {
-		fmt.Printf("err from go mod lookup: %s\n", err)
+		log.Printf("err from go mod lookup: %s", err)
 		os.Exit(1)
 	}
-	fmt.Printf("module name: %s\n", modName)
+	log.Printf("module name: %s", modName)
 
 	u, err := generateURLFromModName(pkgGoURL, proxyGoURL, modName, h)
 	if err != nil {
-		fmt.Printf("error generating URL: %s\n", err)
+		log.Printf("error generating URL: %s", err)
 		os.Exit(1)
 	}
-	fmt.Printf("got url: %s\n", u.String())
+	log.Printf("got url: %s", u.String())
 	err = browser.OpenURL(u.String())
 	if err != nil {
-		fmt.Printf("error opening browser: %s\n", err)
+		log.Printf("error opening browser: %s", err)
 		os.Exit(1)
 	}
 }
@@ -85,7 +85,7 @@ func getHeadSHA(gitPath string) (string, error) {
 		return "", err
 	}
 
-	fmt.Printf("status: %s\n", status)
+	log.Printf("status: %s", status)
 
 	l, err := repo.Log(&git.LogOptions{})
 
@@ -119,6 +119,7 @@ func generateURLFromModName(baseURL, proxyGoURL, modName, headSHA string) (*url.
 	}{}
 	d := json.NewDecoder(resp.Body)
 	err = d.Decode(&v)
+	resp.Body.Close()
 	if err != nil {
 		return nil, err
 	}

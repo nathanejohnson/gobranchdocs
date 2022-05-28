@@ -4,4 +4,4 @@ project is.  This is meant to automate this process:
 
 https://github.com/golang/go/issues/36811#issuecomment-579404726
 
-
+Quick and dirty hack, but figured it might be useful for others.
