@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -28,12 +27,9 @@ func main() {
 	)
 	fs := flag.NewFlagSet("gobranchdocs", flag.ExitOnError)
 	fs.Usage = func() {
-		var b bytes.Buffer
-		fmt.Fprintf(os.Stderr, "%s [options] [path]\n", fs.Name())
-		fs.SetOutput(&b)
+		fmt.Fprintf(fs.Output(), "%s [options] [path]\n", fs.Name())
 		fs.PrintDefaults()
-		fmt.Fprintf(os.Stderr, b.String())
-		fmt.Fprintf(os.Stderr, "\nIf no path is specified, defaults to the current directory\n\n")
+		fmt.Fprint(fs.Output(), "\nIf no path is specified, defaults to the current directory\n\n")
 	}
 	fs.StringVar(&pkgGoURL, "pkg-go-dev-url", "https://pkg.go.dev", "go doc url")
 	fs.StringVar(&proxyGoURL, "proxy-go-url", "https://proxy.golang.org", "proxy url")
