@@ -79,13 +79,12 @@ func getHeadSHA(gitPath string) (string, error) {
 		EnableDotGitCommonDir: false,
 	})
 	if err != nil {
-		log.Printf("error opening git repo %s: %s", gitPath, err)
-		os.Exit(1)
+		return "", fmt.Errorf("error opening git repo: %w", err)
+
 	}
 	wt, err := repo.Worktree()
 	if err != nil {
-		log.Printf("error fetching work tree: %s", err)
-		os.Exit(1)
+		return "", fmt.Errorf("error getting worktree: %w", err)
 	}
 	status, err := wt.Status()
 	if err != nil {
