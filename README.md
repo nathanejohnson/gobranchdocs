@@ -9,3 +9,17 @@ for whatever the current checked out branch of the package is, provided it's pus
 to the remote and pkg.go.dev and proxy.golang.org can reach the remote.  Upon 
 success, it will attempt to open the appropriate pkg.go.dev package documentation
 page in the default browser.
+
+Usage:
+    
+    gobranchdocs [options] [path]
+      -dont-open-browser
+            disable opening browser url
+      -pkg-go-dev-url string
+            go doc url (default "https://pkg.go.dev")
+      -proxy-go-url string
+            proxy url (default "https://proxy.golang.org")
+    
+    If no path is specified, defaults to the current directory
+
+
