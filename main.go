@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -17,18 +18,26 @@ import (
 	"golang.org/x/mod/modfile"
 )
 
-
-
 func main() {
 
 	var (
-		gitPath    string
-		pkgGoURL   string
-		proxyGoURL string
+		gitPath         string
+		pkgGoURL        string
+		proxyGoURL      string
+		dontOpenBrowser bool
 	)
 	fs := flag.NewFlagSet("gobranchdocs", flag.ExitOnError)
-	fs.StringVar(&pkgGoURL, "pkg-go-dev-url", "https://pkg.go.dev", "pkg.go.dev url")
-	fs.StringVar(&proxyGoURL, "proxy-go-url", "https://proxy.golang.org", "proxy.golang.org url")
+	fs.Usage = func() {
+		var b bytes.Buffer
+		fmt.Fprintf(os.Stderr, "%s [options] [path]\n", fs.Name())
+		fs.SetOutput(&b)
+		fs.PrintDefaults()
+		fmt.Fprintf(os.Stderr, b.String())
+		fmt.Fprintf(os.Stderr, "\nIf no path is specified, defaults to the current directory\n\n")
+	}
+	fs.StringVar(&pkgGoURL, "pkg-go-dev-url", "https://pkg.go.dev", "go doc url")
+	fs.StringVar(&proxyGoURL, "proxy-go-url", "https://proxy.golang.org", "proxy url")
+	fs.BoolVar(&dontOpenBrowser, "dont-open-browser", false, "disable opening browser url")
 
 	fs.Parse(os.Args[1:])
 
@@ -58,6 +67,9 @@ func main() {
 		os.Exit(1)
 	}
 	log.Printf("got url: %s", u.String())
+	if dontOpenBrowser {
+		return
+	}
 	err = browser.OpenURL(u.String())
 	if err != nil {
 		log.Printf("error opening browser: %s", err)
@@ -128,7 +140,7 @@ func generateURLFromModName(baseURL, proxyGoURL, modName, headSHA string) (*url.
 	if err != nil {
 		return nil, err
 	}
-	u2.Path = path.Join(u2.Path, modName + "@" + version)
+	u2.Path = path.Join(u2.Path, modName+"@"+version)
 	return u2, nil
 }
 
